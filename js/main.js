@@ -10,174 +10,130 @@ class Socio {
         this.cuotaPagada = false;
     }
 
-    verDescuento() {
-
-        if (this.cuotaPagada === true) {
-            alert("La cuota ya está pagada.");
-            }
-
-        let formaPago = prompt(this.nombre + " ¿Cómo desea pagar?\n1. Efectivo\n2. Transferencia");
-         if (formaPago === "1") {
+    pagar(formaPago) {
+        if (formaPago === "efectivo") {
             this.cuota = this.cuota * 0.90;
-            this.cuotaPagada = true;
-            alert("Pago realizado con éxito.");
-            console.log(this.nombre +" El precio de la cuota es: $" + this.cuota);
-            } else if (formaPago === "2") {
-            this.cuotaPagada = true;
-            alert("Pago realizado con éxito.");
-            console.log(this.nombre +" El precio de la cuota es: $" + this.cuota);
-            } else {
-             alert("Forma de pago inválida.");
-             this.cuotaPagada === false;
-            }
-    }
-
-    mostrarDatos() {
-        console.log("            ------- Datos del socio -------")
-        console.log("Nombre: " + this.nombre);
-        console.log("Apellido: " + this.apellido);
-        console.log("DNI: " + this.dni);
-        console.log("Mail: " + this.mail);
-        console.log("Cuota: $" + this.cuota);
-        console.log("Vencimiento: " + this.vencimiento);
-
-        if (this.cuotaPagada === true) {
-            console.log("Estado de cuota: PAGADA");
-        } else {
-            console.log("Estado de cuota: PENDIENTE");
         }
+        this.cuotaPagada = true;
     }
 }
 
+const socios = [
+    new Socio("Nicolas", "Bernard", "47689974", "nnicobernard@gmail.com", 50000, "30/09/2026"),
+    new Socio("Marcelo", "Gallardo", "47912018", "muñeco@gmail.com", 50000, "30/09/2026"),
+    new Socio("Lionel", "Messi", "47123456", "leo@gmail.com", 50000, "30/09/2026")
+];
 
-const socios = [];
+const formulario = document.querySelector("#formulario");
+const inputNombre = document.querySelector(".nombre");
+const inputApellido = document.querySelector(".apellido");
+const inputDni = document.querySelector(".dni");
+const inputMail = document.querySelector(".mail");
+const buscador = document.querySelector(".buscador");
+const mensaje = document.querySelector(".mensaje");
+const listaSocios = document.querySelector(".lista-socios");
+const totalSocios = document.querySelector(".total-socios");
+const sociosActivos = document.querySelector(".socios-activos");
+const totalRecaudado = document.querySelector(".total-recaudado");
+const botonAgregar = document.querySelector(".btn-agregar");
 
-const socio1 = new Socio(
-    "Nicolas",
-    "Bernard",
-    "47689974",
-    "nnicobernard@gmail.com",
-    50000,
-    "30/09/2026"
-);
+//Agregar socio
+botonAgregar.addEventListener("click", function () {
+    const nombre = inputNombre.value;
+    const apellido = inputApellido.value;
+    const dni = inputDni.value;
+    const mail = inputMail.value;
 
-socios.push(socio1);
-socio1.verDescuento();
+    const nuevoSocio = new Socio(nombre, apellido, dni, mail, 50000, "-");
+    socios.push(nuevoSocio);
 
-const socio2 = new Socio(
-    "Marcelo",
-    "Gallardo",
-    "47912018",
-    "muñeco@gmail.com",
-    50000,
-    "30/09/2026"
-);
+    mensaje.innerText = "Socio agregado";
+    formulario.reset();
+    actualizarResumen();
+    mostrarSocios(socios);
+});
 
-socios.push(socio2);
-socio2.verDescuento();
+//Resumen
+function actualizarResumen() {
+    let pagadas = 0;
+    let recaudado = 0;
 
-const socio3 = new Socio(
-    "Lionel",
-    "Messi",
-    "47123456",
-    "leo@gmail.com",
-    50000,
-    "30/09/2026"
-);
-
-socios.push(socio3);
-socio3.verDescuento();
-
-
-let opcion = "";
-
-while (opcion !== "5") {
-
-    opcion = prompt(
-        "SISTEMA DE GESTION DE SOCIOS\n\n" +
-        "1. Mostrar socios\n" +
-        "2. Buscar socio\n" +
-        "3. Pagar cuota\n" +
-        "4. Agregar socio\n" +
-        "5. Salir"
-    );
-
-    switch (opcion) {
-
-        case "1":
-
-            for (let i = 0; i < socios.length; i++) {
-                socios[i].mostrarDatos();
-            }
-        break;
-        case "2": 
-            let dniBuscado = prompt("Ingrese el DNI:");
-                
-            for (let i = 0; i < socios.length; i++) {
-                if (socios[i].dni === dniBuscado) {
-                    (socios[i].mostrarDatos());
-                }
-            }
-        break;
-        case "3": {
-             let dniBuscado = prompt("Ingrese el DNI:");
-
-            for (let i = 0; i < socios.length; i++) {
-                if (socios[i].dni === dniBuscado) {
-                    socios[i].verDescuento();
-                }
-            }
+    socios.forEach(function (socio) {
+        if (socio.cuotaPagada === true) {
+            pagadas = pagadas + 1;
+            recaudado = recaudado + socio.cuota;
         }
-        break;
-        case "4": 
+    });
 
-            let nombre = prompt("Ingrese el nombre:");
-            let apellido = prompt("Ingrese el apellido:");
-            let dni = prompt("Ingrese el DNI:");
-            let mail = prompt("Ingrese el mail:");
-            let vencimiento = prompt("Ingrese el vencimiento de la cuota:");
-
-            let nuevoSocio = new Socio(
-                nombre,
-                apellido,
-                dni,
-                mail,
-                50000,
-                vencimiento
-            );
-
-            socios.push(nuevoSocio);
-            nuevoSocio.verDescuento();
-            alert("Socio agregado correctamente.");
-
-            break;
-            case "5":
-                
-            alert("Sistema de gestión finalizado.");
-            break;
-            default:
-
-            alert("Opción no válida");
-    }
+    totalSocios.innerText = socios.length;
+    sociosActivos.innerText = pagadas;
+    totalRecaudado.innerText = `$${recaudado}`;
 }
 
-//Ver cantidad de socios activos
-const sociosActivos = socios.filter(socio => socio.cuotaPagada === true) 
-console.log(sociosActivos);
+//Mostrar socios
+function mostrarSocios(lista) {
+    listaSocios.innerHTML = "";
 
-//Ver el vencimiento de la cuota de cada socio.
-socios.forEach(socio => {
-    if (socio.cuotaPagada) {
-    console.log(socio.dni + ": activo hasta " + socio.vencimiento)
-    } else {
-        console.log(socio.dni + ": su cuota esta vencida.")
-    }
-})
+    lista.forEach(function (socio) {
+        let estado = "Pendiente";
+        let pago = `
+            <select class="forma${socio.dni}">
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+            </select>
+            <button class="pagar${socio.dni}">Pagar cuota</button>
+        `;
 
-//Ver cantidad recaudada en este mes.
-const totalMes = socios.reduce((total, socio) => total + socio.cuota, 0)
-    console.log(totalMes)
+        if (socio.cuotaPagada === true) {
+            estado = "Pagada";
+            pago = "";
+        }
 
+        listaSocios.innerHTML += `
+            <div class="socio">
+                <h3>${socio.nombre} ${socio.apellido}</h3>
+                <p>DNI: ${socio.dni}</p>
+                <p>Mail: ${socio.mail}</p>
+                <p>Cuota: $${socio.cuota}</p>
+                <p>Vencimiento: ${socio.vencimiento}</p>
+                <p>Estado: ${estado}</p>
+                ${pago}
+            </div>
+        `;
+    });
 
+    lista.forEach(function (socio) {
+        if (socio.cuotaPagada === false) {
+            const botonPagar = document.querySelector(".pagar" + socio.dni);
+            const selectForma = document.querySelector(".forma" + socio.dni);
 
+            botonPagar.addEventListener("click", function () {
+                socio.pagar(selectForma.value);
+                socio.vencimiento = "30/10/2026";
+                mensaje.innerText = `Cuota de ${socio.nombre} pagada`;
+                mostrarSocios(socios);
+                actualizarResumen();
+            });
+        }
+    });
+}
 
+//Buscador
+buscador.addEventListener("input", function () {
+    const texto = buscador.value.toLowerCase();
+    const encontrados = [];
+
+    socios.forEach(function (socio) {
+        const nombre = socio.nombre.toLowerCase();
+        const apellido = socio.apellido.toLowerCase();
+
+        if (nombre.includes(texto) || apellido.includes(texto) || socio.dni.includes(texto)) {
+            encontrados.push(socio);
+        }
+    });
+
+    mostrarSocios(encontrados);
+});
+
+actualizarResumen();
+mostrarSocios(socios);
